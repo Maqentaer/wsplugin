@@ -4,12 +4,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.GlobalSearchScopesCore;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ws.index.WSFileBasedIndexExtension;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -57,7 +62,11 @@ public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
 
     @NotNull
     public Object[] getVariants() {
-        return new Object[0];
+        final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+        final CommonProcessors.CollectProcessor<String> processor = new CommonProcessors.CollectProcessor<String>();
+        FileBasedIndex.getInstance().processAllKeys(WSFileBasedIndexExtension.WS_PATH_INDEX, processor, scope, null);
+
+        return processor.toArray(new String[processor.getResults().size()]);
     }
 
     public boolean isSoft() {
@@ -81,20 +90,21 @@ public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
     @Override
     public ResolveResult[] multiResolve(boolean b) {
         String controlName = "";
-        String controlPrefix = "";
         String path = "";
 
-        Pattern pattern = Pattern.compile("SBIS3\\.(\\w+)\\.(\\w+)((/\\w+)+\\.js)?");
+        Pattern pattern = Pattern.compile("(SBIS3\\.\\w+\\.\\w+)(.*)?");
         Matcher matcher = pattern.matcher(value);
 
         if (matcher.find()) {
-            controlPrefix = matcher.group(1);
-            controlName = matcher.group(2);
-            path = matcher.group(3);
+            controlName = matcher.group(1);
+            path = matcher.group(2);
         }
 
-        String control = (controlPrefix != null) ? controlPrefix + "." + controlName : "";
-        Collection<VirtualFile> files = WSFileBasedIndexExtension.getFileByComponentName(project, control);
+        if (controlName == null || controlName.isEmpty()) {
+            return new ResolveResult[0];
+        }
+
+        Collection<VirtualFile> files = WSFileBasedIndexExtension.getFileByComponentName(project, controlName);
 
         if (files.size() == 0) {
             return new ResolveResult[0];
@@ -103,27 +113,25 @@ public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
         final PsiManager instance = PsiManager.getInstance(project);
         final String finalPath = path;
 
-        Collection<VirtualFile> resultFilesCollection = new HashSet<VirtualFile>();
+        Collection<PsiElement> resultFilesCollection = new HashSet<PsiElement>();
 
-        if (finalPath != null && !finalPath.isEmpty()) {
-            for(VirtualFile file: files){
+
+        for (VirtualFile file : files) {
+            if (finalPath != null && !finalPath.isEmpty()) {
                 VirtualFile pathFile = file.getParent().findFileByRelativePath(finalPath);
-                if(pathFile != null){
-                    resultFilesCollection.add(pathFile);
+                if (pathFile != null) {
+                    file = pathFile;
                 }
             }
-        } else {
-            resultFilesCollection = files;
+            try {
+                PsiFile psiFile = instance.findFile(file);
+                if (psiFile != null) {
+                    resultFilesCollection.add(instance.findFile(file));
+                }
+            } catch (Exception ignore) {
+            }
         }
 
-        return PsiElementResolveResult.createResults(ContainerUtil.map(resultFilesCollection, new Function<VirtualFile, PsiElement>() {
-            @Override
-            public PsiElement fun(VirtualFile file) {
-                try {
-                        return instance.findFile(file);
-                } catch (Exception ignore) {}
-                return null;
-            }
-        }));
+        return PsiElementResolveResult.createResults(resultFilesCollection);
     }
 }

@@ -2,6 +2,7 @@ package ws.index;
 
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSExpression;
+import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,7 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, Void> {
-    private static final int INDEX_VERSION = 22;
+
+    private static final int INDEX_VERSION = (int)new Date().getTime(); // fixme: !!!!;
+
     public static final ID<String, Void> WS_PATH_INDEX = ID.create("wsPathIndex");
     private DataIndexer<String, Void, FileContent> myDataIndexer = new MyDataIndexer();
 
@@ -30,27 +33,50 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
         @NotNull
         public Map<String, Void> map(@NotNull final FileContent inputData) {
             String key = null;
-            Collection<JSArgumentList> argList = PsiTreeUtil.findChildrenOfType(inputData.getPsiFile(), JSArgumentList.class);
+            try {
+                Collection<JSArgumentList> argListCollection = PsiTreeUtil.findChildrenOfType(inputData.getPsiFile(), JSArgumentList.class);
+                if(argListCollection.iterator().hasNext()){
+                    JSArgumentList argList = argListCollection.iterator().next();
+                    String functionName  = ((JSCallExpressionImpl)argList.getParent()).getMethodExpression().getText();
+                    if(!functionName.equals("define")){
+                        return Collections.emptyMap();
+                    }
+                    JSExpression[] arg = argList.getArguments();
+                    if(arg.length > 0){
+                        Pattern pattern = Pattern.compile("^['\"]js!(SBIS3\\.\\w+\\.\\w+)");
+                        Matcher matcher = pattern.matcher(arg[0].getText());
 
-            if(argList.iterator().hasNext()){
-                JSExpression[] arg = argList.iterator().next().getArguments();
-                if(arg.length > 0){
-                    Pattern pattern = Pattern.compile("^'|\"js!SBIS3\\.(\\w+\\.\\w+)");
-                    Matcher matcher = pattern.matcher(arg[0].getText());
-
-                    if (matcher.find()) {
-                        String controlName = matcher.group(1);
-                        if(controlName != null){
-                            key = controlName;
+                        if (matcher.find()) {
+                            String controlName = matcher.group(1);
+                            if(controlName != null){
+                                key = controlName;
+                            }
                         }
                     }
                 }
-            }
+            } catch (Exception ignore){}
+
+
             if(key == null || key.isEmpty()){
                 return Collections.emptyMap();
             }
 
             return Collections.singletonMap(key, null);
+        }
+    }
+
+    public class WSInputFilter extends DefaultFileTypeSpecificInputFilter {
+        @Override
+        public boolean acceptInput(@NotNull VirtualFile file) {
+            boolean accepts = super.acceptInput(file);
+            if (accepts && file.getFileType() == StdFileTypes.JS) {
+                accepts = (file.getName().endsWith(".module.js"));
+            }
+            return accepts;
+        }
+
+        public WSInputFilter() {
+            super(StdFileTypes.JS);
         }
     }
 
@@ -87,21 +113,6 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
     @Override
     public FileBasedIndex.InputFilter getInputFilter() {
         return new WSInputFilter();
-    }
-
-    public class WSInputFilter extends DefaultFileTypeSpecificInputFilter {
-        @Override
-        public boolean acceptInput(@NotNull VirtualFile file) {
-            boolean accepts = super.acceptInput(file);
-            if (accepts && file.getFileType() == StdFileTypes.JS) {
-                accepts = (file.getName().contains(".module.js"));
-            }
-            return accepts;
-        }
-
-        public WSInputFilter() {
-            super(StdFileTypes.JS);
-        }
     }
 
     @Override
