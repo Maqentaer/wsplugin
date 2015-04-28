@@ -1,0 +1,29 @@
+<idea-plugin version="2">
+  <id>com.ws.unique.plugin.id</id>
+  <name>wsplugin</name>
+  <version>1.0</version>
+  <vendor email="am.salahov@gmail.com" url="https://github.com/salahov/wsplugin/">tensor</vendor>
+
+  <description><![CDATA[]]></description>
+
+  <change-notes><![CDATA[]]></change-notes>
+
+  <idea-version since-build="131"/>
+
+
+  <application-components></application-components>
+
+  <project-components></project-components>
+
+  <actions></actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <psi.referenceContributor implementation="ws.WSPsiReferenceContributor" />
+    <fileBasedIndex implementation="ws.index.WSFileBasedIndexExtension" />
+    <projectConfigurable implementation="ws.settings.WSSettingsPage"></projectConfigurable>
+  </extensions>
+
+  <depends>JavaScript</depends>
+  <depends>com.intellij.modules.platform</depends>
+
+</idea-plugin>
