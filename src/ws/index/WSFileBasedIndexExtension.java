@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.CommonProcessors;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.DataExternalizer;
 import com.intellij.util.io.EnumeratorStringDescriptor;
@@ -26,6 +27,14 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
 
     public static Collection<VirtualFile> getFileByComponentName(@NotNull final Project project, @NotNull final String name) {
         return  FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project));
+    }
+
+    public static VirtualFile getFirstFileByComponentName(@NotNull final Project project, @NotNull final String name) {
+        return  FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project)).iterator().next();
+    }
+
+    public static Collection<String> getAllComponentNames(@NotNull final Project project) {
+        return FileBasedIndex.getInstance().getAllKeys(WS_PATH_INDEX, project);
     }
 
     private static class MyDataIndexer implements DataIndexer<String, Void, FileContent> {
