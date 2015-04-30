@@ -18,9 +18,11 @@
   <actions></actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <psi.referenceContributor implementation="ws.WSPsiReferenceContributor" />
+    <!--<psi.referenceContributor implementation="ws.WSPsiReferenceContributor" />
     <fileBasedIndex implementation="ws.index.WSFileBasedIndexExtension" />
-    <projectConfigurable implementation="ws.settings.WSSettingsPage"></projectConfigurable>
+    <projectConfigurable implementation="ws.settings.WSSettingsPage"/>-->
+    <xml.tagNameProvider implementation="ws.AngularJSTagDescriptorsProvider" />
+    <xml.elementDescriptorProvider implementation="ws.AngularJSTagDescriptorsProvider" order="last"/>
   </extensions>
 
   <depends>JavaScript</depends>
