@@ -3,15 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b872aaa3-2f66-42bb-83dc-3208b69abdec" name="Default" comment="добавил поиск функций в amd файле">
       <change type="DELETED" beforePath="F:\wsplugin\src\ws\AngularJSTagDescriptorsProvider.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ws.jar" afterPath="$PROJECT_DIR$/ws.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/amd/AMDFile.java" afterPath="$PROJECT_DIR$/src/ws/amd/AMDFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/amd/AMDUtils.java" afterPath="$PROJECT_DIR$/src/ws/amd/AMDUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/JavaScriptLanguage.xml" afterPath="$PROJECT_DIR$/.idea/libraries/JavaScriptLanguage.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/index/WSFileBasedIndexExtension.java" afterPath="$PROJECT_DIR$/src/ws/index/WSFileBasedIndexExtension.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/WSOptionPsiReference.java" afterPath="$PROJECT_DIR$/src/ws/WSOptionPsiReference.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/WSPsiReferenceProvider.java" afterPath="$PROJECT_DIR$/src/ws/WSPsiReferenceProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/META-INF/plugin.xml" afterPath="$PROJECT_DIR$/META-INF/plugin.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ws.iws" />
@@ -38,7 +29,7 @@
       <file leaf-file-name="AMDUtils.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ws/amd/AMDUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.57328993">
+            <state vertical-scroll-proportion="0.5723577">
               <caret line="60" column="25" selection-start-line="60" selection-start-column="25" selection-end-line="60" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -666,7 +657,7 @@
       <workItem from="1430816814706" duration="41000" />
       <workItem from="1430898769071" duration="9526000" />
       <workItem from="1430975797222" duration="3789000" />
-      <workItem from="1431413836971" duration="3381000" />
+      <workItem from="1431413836971" duration="3482000" />
     </task>
     <task id="LOCAL-00001" summary="add index">
       <created>1430154272088</created>
@@ -692,11 +683,17 @@
       <option name="project" value="LOCAL" />
       <updated>1430403063919</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="добавил поиск функций в amd файле">
+      <created>1431417468534</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1431417468534</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41514000" />
+    <option name="totallyTimeSpent" value="41615000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -712,13 +709,13 @@
     <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32985386" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32881" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1192,7 +1189,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/amd/AMDUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.57328993">
+        <state vertical-scroll-proportion="0.5723577">
           <caret line="60" column="25" selection-start-line="60" selection-start-column="25" selection-end-line="60" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
