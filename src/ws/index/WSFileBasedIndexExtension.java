@@ -1,5 +1,6 @@
 package ws.index;
 
+import com.intellij.lang.javascript.index.JSPackageIndex;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, Void> {
 
-    private static final int INDEX_VERSION = (int)new Date().getTime(); // fixme: !!!!;
+    private static final int INDEX_VERSION = 110;//(int)new Date().getTime(); // fixme: !!!!;
 
     public static final ID<String, Void> WS_PATH_INDEX = ID.create("wsPathIndex");
     private DataIndexer<String, Void, FileContent> myDataIndexer = new MyDataIndexer();

@@ -20,7 +20,13 @@ public class WSPsiReferenceProvider extends PsiReferenceProvider {
         String path = psiElement.getText();
         VirtualFile appDir = project.getBaseDir();
 
-        XmlAttributeImpl attr = (XmlAttributeImpl) psiElement.getParent();
+        XmlAttributeImpl attr;
+        try {
+            attr = (XmlAttributeImpl) psiElement.getParent();
+        } catch (Exception e){
+            return new PsiReference[0];
+        }
+
 
         XmlTag tag = attr.getParent();
         XmlAttribute type = tag.getAttribute("type");

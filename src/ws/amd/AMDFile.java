@@ -16,6 +16,7 @@ public class AMDFile {
     private JSArrayLiteralExpression arguments;
     private JSFunctionExpression function;
     private String className;
+    public boolean hasConstructor;
     private JSCallExpression callExpression;
     private Set<JSFunctionExpression> protoFunctions;
     private Set<JSFunctionExpression> functions;
@@ -25,14 +26,15 @@ public class AMDFile {
         this.function = function;
         this.className = className;
         this.callExpression = originalParent;
+        this.hasConstructor = false;
     }
 
     public Set<String> getProtoFunctionDeclaration(String prefix){
         Set<String> res = new HashSet<String>();
-        for( JSFunctionExpression function : protoFunctions){
+        for( JSFunctionExpression function : hasConstructor ? protoFunctions : functions){
             String name = function.getName();
             if(name != null && !name.isEmpty()){
-                res.add(prefix + "prototype." + function.getName().replaceAll("['\"]]",""));
+                res.add(prefix + (hasConstructor ? "prototype." : "") + function.getName().replaceAll("['\"]",""));
             }
         }
         return res;

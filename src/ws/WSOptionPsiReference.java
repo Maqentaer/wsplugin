@@ -1,6 +1,7 @@
 package ws;
 
 import com.intellij.lang.javascript.psi.*;
+import com.intellij.lang.javascript.psi.impl.JSReturnStatementImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -40,9 +41,9 @@ public class WSOptionPsiReference extends WSPsiReference {
         for (int i = 0; i < res.length; i++) {
             res[i] = "js!" + res[i];
         }
-
         return res;
     }
+
 
     @NotNull
     @Override
@@ -63,12 +64,17 @@ public class WSOptionPsiReference extends WSPsiReference {
 
             AMDFile amdFile = AMDUtils.getDefineStatementItems(file);
             if (amdFile != null) {
-                Collection<JSFunctionExpression> functions = amdFile.getProtoFunctions();
+                Collection<JSFunctionExpression> functions;
+                if(amdFile.hasConstructor){
+                    functions = amdFile.getProtoFunctions();
+                } else {
+                    functions = amdFile.getFunctions();
+                }
 
                 for (JSFunctionExpression function : functions) {
                     JSElement parent = (JSElement) function.getParent();
                     if (parent instanceof JSProperty) {
-                        String curFunctionName = function.getName() != null ? function.getName().replaceAll("['|\"]]", "") : "";
+                        String curFunctionName = function.getName() != null ? function.getName().replaceAll("['|\"]", "") : "";
                         if (function.getName() != null && functionName.matches("(prototype.)?" + curFunctionName)) {
                             result.add(function);
                         }

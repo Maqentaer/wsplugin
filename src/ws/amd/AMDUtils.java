@@ -15,18 +15,18 @@ public class AMDUtils {
         final AMDFile[] itemsArray = new AMDFile[1];
         final Set<JSFunctionExpression> protoFunctions = new HashSet<JSFunctionExpression>();
         final Set<JSFunctionExpression> functions = new HashSet<JSFunctionExpression>();
-
         file.acceptChildren(new JSRecursiveElementVisitor() {
             @Override
             public void visitJSCallExpression(JSCallExpression element) {
                 if (element.getMethodExpression().getText().equals("define")) {
-                    AMDFile items = getDefineStatementItemsFromArguments(element.getArguments(), element);
-                    if (items == null) {
+                    AMDFile item = getDefineStatementItemsFromArguments(element.getArguments(), element);
+                    if (item == null) {
                         itemsArray[0] = null;
                         return;
                     }
-                    itemsArray[0] = getDefineStatementItemsFromArguments(element.getArguments(), element);
-                } else if (element.getMethodExpression().getText().endsWith("extend")) {
+                    itemsArray[0] = item;
+                } else if (itemsArray[0] != null && element.getMethodExpression().getText().endsWith("extend")) {
+                    itemsArray[0].hasConstructor = true;
                     JSExpression[] arguments = element.getArguments();
                     JSObjectLiteralExpression obj = null;
                     if (arguments.length == 1) {
@@ -49,17 +49,27 @@ public class AMDUtils {
             }
         });
 
-        itemsArray[0].setProtoFunctions(protoFunctions);
-        itemsArray[0].setFunctions(functions);
+        if(itemsArray[0] != null) {
+            if (itemsArray[0].hasConstructor) {
+                itemsArray[0].setProtoFunctions(protoFunctions);
+            } else {
+                file.acceptChildren(new JSRecursiveElementVisitor() {
+                    @Override
+                    public void visitJSFunctionExpression(JSFunctionExpression element) {
+                        if (element.getParent() instanceof JSProperty) {
+                            functions.add(element);
+                        }
+                        super.visitJSFunctionExpression(element);
+                    }
+                });
+                itemsArray[0].setFunctions(functions);
+            }
+        }
 
         return itemsArray[0];
     }
 
-    public static AMDFile getDefineStatementItemsFromArguments(JSExpression[] arguments, JSCallExpression original) {
-        // account for when we get this (even though this is defined as legacy) :
-        /**
-         * define('classname', [], function(...){});
-         */
+    private static AMDFile getDefineStatementItemsFromArguments(JSExpression[] arguments, JSCallExpression original) {
         int argumentOffset = 0;
         String className = null;
 
