@@ -1,75 +1,68 @@
 package ws.amd;
 
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
-import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSFunctionExpression;
-import com.intellij.patterns.CollectionPattern;
-import com.intellij.util.containers.ContainerUtil;
-import com.thoughtworks.xstream.converters.collections.CollectionConverter;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiFile;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class AMDFile {
+    private PsiFile file;
     private JSArrayLiteralExpression arguments;
-    private JSFunctionExpression function;
     private String className;
-    public boolean hasConstructor;
-    private JSCallExpression callExpression;
     private Set<JSFunctionExpression> protoFunctions;
     private Set<JSFunctionExpression> functions;
 
-    public AMDFile(JSArrayLiteralExpression arguments, JSFunctionExpression function, String className, JSCallExpression originalParent) {
+    public boolean hasConstructor;
+
+    public AMDFile(PsiFile file, String className, JSArrayLiteralExpression arguments) {
+        this.file = file;
         this.arguments = arguments;
-        this.function = function;
         this.className = className;
-        this.callExpression = originalParent;
         this.hasConstructor = false;
     }
 
-    public Set<String> getProtoFunctionDeclaration(String prefix){
+    public Set<String> getFunctionDeclaration(String prefix) {
         Set<String> res = new HashSet<String>();
-        for( JSFunctionExpression function : hasConstructor ? protoFunctions : functions){
+        for (JSFunctionExpression function : hasConstructor ? protoFunctions : functions) {
             String name = function.getName();
-            if(name != null && !name.isEmpty()){
-                res.add(prefix + (hasConstructor ? "prototype." : "") + function.getName().replaceAll("['\"]",""));
+            if (name != null && !name.isEmpty()) {
+                res.add(prefix + (hasConstructor ? "prototype." : "") + function.getName().replaceAll("['\"]", ""));
             }
         }
         return res;
+    }
+
+    public PsiFile getFile() {
+        return file;
     }
 
     public JSArrayLiteralExpression getArguments() {
         return arguments;
     }
 
-    public JSFunctionExpression getFunction() {
-        return function;
-    }
-
-    @Nullable
-    public String getClassName() {
+    public String getName() {
         return className;
     }
 
-    public JSCallExpression getCallExpression() {
-        return callExpression;
-    }
-
-    public void setFunctions(Set<JSFunctionExpression> func){
+    public void setFunctions(Set<JSFunctionExpression> func) {
         functions = func;
     }
 
-    public void setProtoFunctions(Set<JSFunctionExpression> func){
+    public void setProtoFunctions(Set<JSFunctionExpression> func) {
         protoFunctions = func;
     }
 
-    public Set<JSFunctionExpression> getFunctions(){
+    public Set<JSFunctionExpression> getFunctions() {
+        return hasConstructor ? protoFunctions : functions;
+    }
+
+    public Set<JSFunctionExpression> getAllFunctions() {
         return functions;
     }
 
-    public Set<JSFunctionExpression> getProtoFunctions(){
+    public Set<JSFunctionExpression> getProtoFunctions() {
         return protoFunctions;
     }
 }

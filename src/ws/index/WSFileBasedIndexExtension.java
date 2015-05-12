@@ -1,6 +1,5 @@
 package ws.index;
 
-import com.intellij.lang.javascript.index.JSPackageIndex;
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
@@ -9,13 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.CommonProcessors;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.DataExternalizer;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import org.jetbrains.annotations.NotNull;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,10 +29,6 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
 
     public static Collection<VirtualFile> getFileByComponentName(@NotNull final Project project, @NotNull final String name) {
         return  FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project));
-    }
-
-    public static VirtualFile getFirstFileByComponentName(@NotNull final Project project, @NotNull final String name) {
-        return  FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project)).iterator().next();
     }
 
     public static Collection<String> getAllComponentNames(@NotNull final Project project) {

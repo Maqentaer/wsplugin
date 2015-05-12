@@ -23,7 +23,7 @@ public class WSPsiReferenceProvider extends PsiReferenceProvider {
         XmlAttributeImpl attr;
         try {
             attr = (XmlAttributeImpl) psiElement.getParent();
-        } catch (Exception e){
+        } catch (Exception e) {
             return new PsiReference[0];
         }
 
@@ -36,14 +36,14 @@ public class WSPsiReferenceProvider extends PsiReferenceProvider {
         String attrValue = attr.getValue();
 
         if (attrValue != null && !attrValue.isEmpty()) {
-            if(tagName.equals("component") && attName.equals("data-component")){
+            if (tagName.equals("component") && attName.equals("data-component")) {
                 try {
                     PsiReference ref = new WSPsiReference(attrValue, psiElement, new TextRange(1, path.length() - 1), project, appDir);
                     return new PsiReference[]{ref};
                 } catch (Exception ignored) {
                 }
-            } else if(tagName.equals("option") && attName.equals("value")){
-                if(type != null && type.getValue() != null && type.getValue().equals("function")){
+            } else if (tagName.equals("option") && attName.equals("value")) {
+                if (attrValue.startsWith("js!") || (type != null && type.getValue() != null && type.getValue().equals("function"))) {
                     try {
                         PsiReference ref = new WSOptionPsiReference(attrValue, psiElement, new TextRange(1, path.length() - 1), project, appDir);
                         return new PsiReference[]{ref};
