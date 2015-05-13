@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WSOptionPsiReference extends WSPsiReference {
-    public WSOptionPsiReference(String value, PsiElement element, TextRange textRange, Project project, VirtualFile appDir) {
-        super(value, element, textRange, project, appDir);
+public class WSOptionReference extends WSControlReference {
+    public WSOptionReference(PsiElement psiElement) {
+        super(psiElement);
     }
 
     @NotNull

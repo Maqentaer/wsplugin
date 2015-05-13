@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
-import ws.reference.WSJSPsiReference;
+import ws.reference.WSJSReference;
 
 public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
     @NotNull
@@ -14,7 +14,7 @@ public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
     public PsiReference[] getReferencesByElement(@NotNull PsiElement psiElement, @NotNull ProcessingContext processingContext) {
         if (psiElement.getParent() instanceof JSArrayLiteralExpression) {
             try {
-                PsiReference ref = new WSJSPsiReference(psiElement);
+                PsiReference ref = new WSJSReference(psiElement);
                 return new PsiReference[]{ref};
             } catch (Exception ignore) {
 

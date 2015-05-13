@@ -11,8 +11,8 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.ProcessingContext;
 import com.intellij.psi.impl.source.xml.XmlAttributeImpl;
 import org.jetbrains.annotations.NotNull;
-import ws.reference.WSOptionPsiReference;
-import ws.reference.WSPsiReference;
+import ws.reference.WSControlReference;
+import ws.reference.WSOptionReference;
 
 public class WSPsiReferenceProvider extends PsiReferenceProvider {
     @NotNull
@@ -40,14 +40,14 @@ public class WSPsiReferenceProvider extends PsiReferenceProvider {
         if (attrValue != null && !attrValue.isEmpty()) {
             if (tagName.equals("component") && attName.equals("data-component")) {
                 try {
-                    PsiReference ref = new WSPsiReference(attrValue, psiElement, new TextRange(1, path.length() - 1), project, appDir);
+                    PsiReference ref = new WSControlReference(psiElement);
                     return new PsiReference[]{ref};
                 } catch (Exception ignored) {
                 }
             } else if (tagName.equals("option") && attName.equals("value")) {
                 if (attrValue.startsWith("js!") || (type != null && type.getValue() != null && type.getValue().equals("function"))) {
                     try {
-                        PsiReference ref = new WSOptionPsiReference(attrValue, psiElement, new TextRange(1, path.length() - 1), project, appDir);
+                        PsiReference ref = new WSOptionReference(psiElement);
                         return new PsiReference[]{ref};
                     } catch (Exception ignored) {
                     }
