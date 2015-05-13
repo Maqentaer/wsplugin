@@ -1,4 +1,4 @@
-package ws;
+package ws.reference;
 
 import com.intellij.lang.javascript.psi.*;
 import com.intellij.openapi.project.Project;
@@ -6,8 +6,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import ws.amd.AMDUtils;
-import ws.amd.AMDFile;
+import ws.amd.WSAMDUtils;
+import ws.amd.WSAMDFile;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,7 +27,7 @@ public class WSOptionPsiReference extends WSPsiReference {
             ResolveResult[] resolveResults = super.multiResolve(true);
             if (resolveResults.length > 0 && resolveResults[0] != null) {
                 JSFile file = (JSFile) resolveResults[0].getElement();
-                AMDFile amdFile = AMDUtils.getAMDFile(file);
+                WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
                 if (amdFile != null) {
                     Set<String> func = amdFile.getFunctionDeclaration("js!" + this.parseResult[0] + this.parseResult[1] + ":");
                     return func.toArray(new String[func.size()]);
@@ -64,7 +64,7 @@ public class WSOptionPsiReference extends WSPsiReference {
             JSFile file = (JSFile) resolveResults[0].getElement();
 
 
-            AMDFile amdFile = AMDUtils.getAMDFile(file);
+            WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
             if (amdFile != null) {
                 Collection<JSFunctionExpression> functions = amdFile.getFunctions();
 

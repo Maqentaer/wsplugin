@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AMDFile {
+public class WSAMDFile {
     private PsiFile file;
     private JSArrayLiteralExpression arguments;
     private String className;
@@ -16,7 +16,7 @@ public class AMDFile {
 
     public boolean hasConstructor;
 
-    public AMDFile(PsiFile file, String className, JSArrayLiteralExpression arguments) {
+    public WSAMDFile(PsiFile file, String className, JSArrayLiteralExpression arguments) {
         this.file = file;
         this.arguments = arguments;
         this.className = className;

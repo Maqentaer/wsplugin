@@ -11,6 +11,8 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.ProcessingContext;
 import com.intellij.psi.impl.source.xml.XmlAttributeImpl;
 import org.jetbrains.annotations.NotNull;
+import ws.reference.WSOptionPsiReference;
+import ws.reference.WSPsiReference;
 
 public class WSPsiReferenceProvider extends PsiReferenceProvider {
     @NotNull

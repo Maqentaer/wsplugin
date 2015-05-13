@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
+import ws.reference.WSJSPsiReference;
 
 public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
     @NotNull

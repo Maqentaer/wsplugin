@@ -8,17 +8,17 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-public class AMDUtils {
+public class WSAMDUtils {
 
     @Nullable
-    public static AMDFile getAMDFile(final PsiFile file) {
-        final AMDFile[] itemsArray = new AMDFile[1];
+    public static WSAMDFile getAMDFile(final PsiFile file) {
+        final WSAMDFile[] itemsArray = new WSAMDFile[1];
 
         file.acceptChildren(new JSRecursiveElementVisitor() {
             @Override
             public void visitJSCallExpression(JSCallExpression element) {
                 if (element.getMethodExpression().getText().equals("define")) {
-                    AMDFile amdFile = createAMDFile(file, element.getArguments());
+                    WSAMDFile amdFile = createAMDFile(file, element.getArguments());
                     if (amdFile == null) {
                         itemsArray[0] = null;
                         return;
@@ -77,11 +77,11 @@ public class AMDUtils {
     }
 
     @Nullable
-    private static AMDFile createAMDFile(PsiFile file, JSExpression[] arguments) {
+    private static WSAMDFile createAMDFile(PsiFile file, JSExpression[] arguments) {
         if (arguments.length == 3 && arguments[0] instanceof JSLiteralExpression && arguments[1] instanceof JSArrayLiteralExpression && arguments[2] instanceof JSFunctionExpression) {
-            return new AMDFile(file, arguments[0].getText(), (JSArrayLiteralExpression) arguments[1]);
+            return new WSAMDFile(file, arguments[0].getText(), (JSArrayLiteralExpression) arguments[1]);
         } else if (arguments.length == 2 && arguments[0] instanceof JSArrayLiteralExpression && arguments[1] instanceof JSFunctionExpression) {
-            return new AMDFile(file, null, (JSArrayLiteralExpression) arguments[0]);
+            return new WSAMDFile(file, null, (JSArrayLiteralExpression) arguments[0]);
         } else {
             return null;
         }

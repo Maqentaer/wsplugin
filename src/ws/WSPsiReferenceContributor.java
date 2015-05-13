@@ -1,13 +1,10 @@
 package ws;
 
-import com.intellij.lang.javascript.frameworks.amd.JSAmdUtil;
 import com.intellij.lang.javascript.psi.impl.JSLiteralExpressionImpl;
 import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
-import com.intellij.psi.impl.source.xml.XmlAttributeImpl;
 import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl;
-import com.intellij.psi.impl.source.xml.XmlTagImpl;
 import org.jetbrains.annotations.NotNull;
 
 

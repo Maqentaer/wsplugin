@@ -1,39 +1,36 @@
-package ws;
+package ws.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import ws.WSUtil;
 import ws.index.WSFileBasedIndexExtension;
+
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+public class WSJSPsiReference implements PsiReference, PsiPolyVariantReference {
+    private String value;
+    private Project project;
+    private PsiElement psiElement;
+    private TextRange textRange;
 
-
-public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
-    protected PsiElement element;
-    protected TextRange textRange;
-    protected Project project;
-    protected String value;
-    protected VirtualFile appDir;
-    protected String[] parseResult;
-
-    public WSPsiReference(String value, PsiElement element, TextRange textRange, Project project, VirtualFile appDir) {
-        this.element = element;
-        this.textRange = textRange;
-        this.project = project;
-        this.value = value;
-        this.appDir = appDir;
-        this.parseResult = WSUtil.parseComponentName(value);
+    public WSJSPsiReference(PsiElement psiElement) {
+        this.psiElement = psiElement;
+        this.project = psiElement.getProject();
+        this.value = psiElement.getText().replaceAll("['\"]", "");
+        this.textRange = new TextRange(1, this.value.length() - 1);
     }
 
     @NotNull
     public Object[] getVariants() {
         Collection<String> result = new HashSet<String>();
-        String[] parseResult = WSUtil.parseComponentName(value);
+        Collection<String> result2= new HashSet<String>();
+        String[] parseResult = WSUtil.parseComponentName(psiElement.getText());
         String componentName = parseResult[0];
         String postKey = parseResult[1];
 
@@ -44,19 +41,25 @@ public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
                     result.addAll(WSUtil.getChildFiles(file, componentName));
                 }
             }
-            if(result.size() > 0){
-                return  result.toArray();
+
+            if(result2.size() > 0){
+                return  result2.toArray();
             }
+        } else {
+            result = WSFileBasedIndexExtension.getAllComponentNames(project);
         }
 
-        return WSFileBasedIndexExtension.getAllComponentNames(project).toArray();
+
+        for(String temp: result){
+            result2.add("js!" + temp);
+        }
+        return  result2.toArray();
+
     }
 
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean b) {
-
-
         String[] parseResult = WSUtil.parseComponentName(value);
 
         String controlName = parseResult[0];
@@ -110,7 +113,7 @@ public class WSPsiReference implements PsiReference, PsiPolyVariantReference {
     }
 
     public PsiElement getElement() {
-        return this.element;
+        return this.psiElement;
     }
 
     public TextRange getRangeInElement() {
