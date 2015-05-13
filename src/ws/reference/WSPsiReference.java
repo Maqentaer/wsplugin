@@ -2,16 +2,14 @@ package ws.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.ResolveResult;
 import com.intellij.util.IncorrectOperationException;
-import ws.WSUtil;
-import ws.index.WSFileBasedIndexExtension;
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import ws.WSUtil;
 
 
 public abstract class WSPsiReference implements PsiReference, PsiPolyVariantReference {
@@ -25,7 +23,7 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
         this.element = psiElement;
         this.project = psiElement.getProject();
         this.value = psiElement.getText().replaceAll("['\"]", "");
-        this.textRange = new TextRange(1, this.value.length() - 1);
+        this.textRange = new TextRange(1, (this.value.length() > 0 ? this.value.length() - 1 : 1));
         this.parseResult = WSUtil.parseComponentName(value);
     }
 
@@ -33,7 +31,6 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
     public abstract Object[] getVariants();
 
     @NotNull
-    @Override
     public abstract ResolveResult[] multiResolve(boolean b);
 
     @Nullable
@@ -42,7 +39,6 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
         return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
     }
 
-    @Override
     public String toString() {
         return getCanonicalText();
     }
@@ -72,7 +68,6 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
     }
 
     @NotNull
-    @Override
     public String getCanonicalText() {
         return value;
     }
