@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b872aaa3-2f66-42bb-83dc-3208b69abdec" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/amd/WSAMDFile.java" afterPath="$PROJECT_DIR$/src/ws/amd/WSAMDFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/reference/WSControlReference.java" afterPath="$PROJECT_DIR$/src/ws/reference/WSControlReference.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/WSJSPsiReferenceProvider.java" afterPath="$PROJECT_DIR$/src/ws/WSJSPsiReferenceProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/reference/WSOptionReference.java" afterPath="$PROJECT_DIR$/src/ws/reference/WSOptionReference.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/WSUtil.java" afterPath="$PROJECT_DIR$/src/ws/WSUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/META-INF/plugin.xml" afterPath="$PROJECT_DIR$/META-INF/plugin.xml" />
+    <list default="true" id="b872aaa3-2f66-42bb-83dc-3208b69abdec" name="Default" comment="Refactoring">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ws.jar" afterPath="$PROJECT_DIR$/ws.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="F:\wsplugin\src\ws\reference\WSJSReference.java" afterPath="$PROJECT_DIR$/src/ws/reference/WSJsReference.java" />
     </list>
     <ignored path="ws.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -780,7 +773,7 @@
       <workItem from="1431495858148" duration="7839000" />
       <workItem from="1431586096151" duration="57000" />
       <workItem from="1431587136513" duration="11000" />
-      <workItem from="1431609468856" duration="5701000" />
+      <workItem from="1431609468856" duration="5878000" />
     </task>
     <task id="LOCAL-00001" summary="add index">
       <created>1430154272088</created>
@@ -842,11 +835,17 @@
       <option name="project" value="LOCAL" />
       <updated>1431503692031</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Refactoring">
+      <created>1431616371817</created>
+      <option name="number" value="00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1431616371817</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70310000" />
+    <option name="totallyTimeSpent" value="70487000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
