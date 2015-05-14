@@ -1,10 +1,19 @@
 <idea-plugin version="2">
   <id>com.ws.unique.plugin.id</id>
   <name>wsplugin</name>
-  <version>1.0</version>
-  <vendor email="am.salahov@gmail.com" url="https://github.com/salahov/wsplugin/">tensor</vendor>
+  <version>0.1</version>
+  <vendor url="https://github.com/salahov/wsplugin/"></vendor>
 
-  <description><![CDATA[]]></description>
+  <description><![CDATA[
+  # wsplugin
+
+  Плагин для работы с ws
+
+  Что реализованино:
+
+  - переход и автодополнение в xhtml файлах (в тегах component и option)
+  - переход и автодополнение в в зависимостях requirejs модулей
+  ]]></description>
 
   <change-notes><![CDATA[]]></change-notes>
 
@@ -19,5 +28,4 @@
     <fileBasedIndex implementation="ws.index.WSFileBasedIndexExtension" />
     <!--<projectConfigurable implementation="ws.settings.WSSettingsPage"/>-->
   </extensions>
-
 </idea-plugin>

@@ -17,24 +17,28 @@ import java.util.regex.Pattern;
 public class WSUtil {
 
     protected static String REGEX_PATTERN = "(\\w+!)?(SBIS3\\.\\w+\\.\\w+)(.*)?";
-    protected static String REGEX_PATTERN_WITH_PREFIX = "^['\"]js!(SBIS3\\.\\w+\\.\\w+)(.*)";
+    protected static String CONTROL_REGEX_PATTERN = "^(SBIS3\\.\\w+\\.\\w+)$";
+
+    public static boolean matchPattern(String str){
+        return str.matches(CONTROL_REGEX_PATTERN);
+    }
 
     public static String[] parseComponentName(String text) {
-        String[] result = {"", "", null, ""};
+        String[] result = {"", "", "", ""};
         text = text.replace("IntellijIdeaRulezzz", ""); //fixme: IntellijIdeaRulezzz
 
         Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(text);
 
         if (matcher.find()) {
-            result[0] = matcher.group(2);
-            result[1] = matcher.group(3) != null ? matcher.group(3) : "";
-            result[3] = matcher.group(1) != null ? matcher.group(1).replace("!", "") : "";
+            result[0] = matcher.group(2).trim(); // имя контрола
+            result[1] = matcher.group(3) != null ? matcher.group(3).trim() : ""; // путь до файла + имя функции
+            result[3] = matcher.group(1) != null ? matcher.group(1).replace("!", "") : ""; // префикс (js, html, css)
 
             String[] str = result[1].split(":");
+            result[1] = str[0]; // путь до файла
             if (str.length > 1) {
-                result[1] = str[0];
-                result[2] = str[1];
+                result[2] = str[1]; // имя файла
             }
         }
 
@@ -65,7 +69,7 @@ public class WSUtil {
     }
 
     @NonNls
-    public static Collection<String> getVariantsByName(@NonNls String[] parseResult, Project project) {
+    public static Collection<String> getVariantsByName(@NonNls String[] parseResult, @NonNls Project project) {
 
         Collection<String> result = new HashSet<String>();
         String componentName = parseResult[0];
@@ -85,14 +89,18 @@ public class WSUtil {
         return result;
     }
 
-    public static Collection<PsiElement> getFilesByNameWithPrefix(@NonNls String[] parseResult, Project project) {
-        String pref = parseResult[3];
+    public static Collection<PsiElement> resolveFilesByName(@NonNls String[] parseResult, @NonNls Project project) {
         Collection<PsiElement> resultFilesCollection = new HashSet<PsiElement>();
 
         String controlName = parseResult[0];
         String path = parseResult[1];
+        String pref = parseResult[3];
 
-        if (pref == null || !pref.matches("^(css|js|html)$") || controlName == null || controlName.isEmpty()) {
+        if(pref.isEmpty() && !controlName.isEmpty()){
+            pref = "js";
+        }
+
+        if (!pref.matches("^(css|js|html)$") || controlName == null || controlName.isEmpty()) {
             return resultFilesCollection;
         }
 
@@ -132,7 +140,6 @@ public class WSUtil {
             } catch (Exception ignore) {
             }
         }
-
 
         return resultFilesCollection;
     }

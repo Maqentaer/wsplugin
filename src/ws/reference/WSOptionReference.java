@@ -1,19 +1,23 @@
 package ws.reference;
 
-import com.intellij.lang.javascript.psi.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.lang.javascript.psi.JSElement;
+import com.intellij.lang.javascript.psi.JSFile;
+import com.intellij.lang.javascript.psi.JSFunctionExpression;
+import com.intellij.lang.javascript.psi.JSProperty;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NotNull;
-import ws.amd.WSAMDUtils;
+import ws.WSUtil;
 import ws.amd.WSAMDFile;
+import ws.amd.WSAMDUtils;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WSOptionReference extends WSControlReference {
+public class WSOptionReference extends WSPsiReference {
     public WSOptionReference(PsiElement psiElement) {
         super(psiElement);
     }
@@ -21,21 +25,19 @@ public class WSOptionReference extends WSControlReference {
     @NotNull
     @Override
     public Object[] getVariants() {
-        String functionName = this.parseResult[2];
+        Collection<PsiElement> resolveFiles = WSUtil.resolveFilesByName(parseResult, project);
 
-        if (functionName != null) {
-            ResolveResult[] resolveResults = super.multiResolve(true);
-            if (resolveResults.length > 0 && resolveResults[0] != null) {
-                JSFile file = (JSFile) resolveResults[0].getElement();
-                WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
-                if (amdFile != null) {
-                    Set<String> func = amdFile.getFunctionDeclaration("js!" + this.parseResult[0] + this.parseResult[1] + ":");
-                    return func.toArray(new String[func.size()]);
-                }
+        // todo: сделать в цикле
+        if (resolveFiles.iterator().hasNext()) {
+            JSFile file = (JSFile) resolveFiles.iterator().next();
+            WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
+            if (amdFile != null) {
+                Set<String> func = amdFile.getFunctionDeclaration("js!" + this.parseResult[0] + this.parseResult[1] + ":");
+                return func.toArray(new String[func.size()]);
             }
         }
 
-        Object[] res = super.getVariants();
+        Object[] res = WSUtil.getVariantsByName(parseResult, project).toArray();
         for (int i = 0; i < res.length; i++) {
             res[i] = "js!" + res[i];
         }
@@ -46,25 +48,17 @@ public class WSOptionReference extends WSControlReference {
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean b) {
-
-        if (!value.startsWith("js!")) {
-            return new ResolveResult[0];
-        }
-
         String functionName = this.parseResult[2];
 
-        if(functionName == null || functionName.isEmpty()){
-            return new ResolveResult[0];
+        if (functionName == null || functionName.isEmpty() || !value.startsWith("js!")) {
+            return ResolveResult.EMPTY_ARRAY;
         }
 
-        ResolveResult[] resolveResults = super.multiResolve(b);
+        Collection<PsiElement> resolveFiles = WSUtil.resolveFilesByName(parseResult, project);
+        Collection<PsiElement> result = new HashSet<PsiElement>();
 
-        if (resolveResults.length > 0) {
-            Collection<PsiElement> result = new HashSet<PsiElement>();
-            JSFile file = (JSFile) resolveResults[0].getElement();
-
-
-            WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
+        for (PsiElement file : resolveFiles) {
+            WSAMDFile amdFile = WSAMDUtils.getAMDFile((PsiFile) file);
             if (amdFile != null) {
                 Collection<JSFunctionExpression> functions = amdFile.getFunctions();
 
@@ -77,10 +71,9 @@ public class WSOptionReference extends WSControlReference {
                         }
                     }
                 }
-                return PsiElementResolveResult.createResults(result);
             }
         }
 
-        return resolveResults;
+        return PsiElementResolveResult.createResults(result);
     }
 }

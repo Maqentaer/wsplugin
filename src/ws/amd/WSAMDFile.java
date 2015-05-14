@@ -55,7 +55,7 @@ public class WSAMDFile {
     }
 
     public Set<JSFunctionExpression> getFunctions() {
-        return hasConstructor ? protoFunctions : functions;
+        return hasConstructor ? getProtoFunctions() : getAllFunctions();
     }
 
     public Set<JSFunctionExpression> getAllFunctions() {

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceProvider;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
-import ws.reference.WSJSReference;
+import ws.reference.WSJsReference;
 
 public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
     @NotNull
@@ -25,7 +25,7 @@ public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
 
         if (parent instanceof JSArrayLiteralExpression  && topParent instanceof JSCallExpression && (topParent.getText().startsWith("define") || topParent.getText().startsWith("require"))) {
             try {
-                PsiReference ref = new WSJSReference(psiElement);
+                PsiReference ref = new WSJsReference(psiElement);
                 return new PsiReference[]{ref};
             } catch (Exception ignore) {
 
