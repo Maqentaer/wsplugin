@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.ResolveResult;
 import org.jetbrains.annotations.NonNls;
 import ws.index.WSFileBasedIndexExtension;
 
@@ -16,8 +15,9 @@ import java.util.regex.Pattern;
 
 public class WSUtil {
 
-    protected static String REGEX_PATTERN = "(\\w+!)?(SBIS3\\.\\w+\\.\\w+)(.*)?";
-    protected static String CONTROL_REGEX_PATTERN = "^(SBIS3\\.\\w+\\.\\w+)$";
+    public static String REGEX_PATTERN = "(\\w+!)?(SBIS3\\.\\w+\\.[\\w.]+)(.*)?";
+    public static String INDEX_REGEX_PATTERN = "^['\"]js!(SBIS3\\.\\w+\\.[\\w.]+)";
+    public static String CONTROL_REGEX_PATTERN = "^(SBIS3\\.\\w+\\.\\w+)$";
 
     public static boolean matchPattern(String str){
         return str.matches(CONTROL_REGEX_PATTERN);
@@ -25,7 +25,7 @@ public class WSUtil {
 
     public static String[] parseComponentName(String text) {
         String[] result = {"", "", "", ""};
-        text = text.replace("IntellijIdeaRulezzz", ""); //fixme: IntellijIdeaRulezzz
+        text = text.replace("IntellijIdeaRulezzz", "");
 
         Pattern pattern = Pattern.compile(REGEX_PATTERN);
         Matcher matcher = pattern.matcher(text);
@@ -70,7 +70,6 @@ public class WSUtil {
 
     @NonNls
     public static Collection<String> getVariantsByName(@NonNls String[] parseResult, @NonNls Project project) {
-
         Collection<String> result = new HashSet<String>();
         String componentName = parseResult[0];
         String postKey = parseResult[1];
@@ -82,10 +81,31 @@ public class WSUtil {
                     result.addAll(WSUtil.getChildFiles(file, componentName));
                 }
             }
+            if(result.size() == 0){
+                result = WSFileBasedIndexExtension.getAllComponentNames(project);
+            }
         } else {
             result = WSFileBasedIndexExtension.getAllComponentNames(project);
         }
 
+        return result;
+    }
+
+    public static Collection<String> getOtherModules(@NonNls String controlName, @NonNls Project project){
+        Collection<String> result = new HashSet<String>();
+        Collection<VirtualFile> files = WSFileBasedIndexExtension.getFileByComponentName(project, controlName);
+
+        for(VirtualFile file : files){
+            String fileName = file.getName().replace("module.js","");
+            VirtualFile folder = file.getParent();
+
+            if (folder.findFileByRelativePath(fileName + "css") != null) {
+                result.add("css!" + controlName);
+            }
+            if (folder.findFileByRelativePath(fileName + "xhtml") != null) {
+                result.add("html!" + controlName);
+            }
+        }
         return result;
     }
 

@@ -23,7 +23,7 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
         this.element = psiElement;
         this.project = psiElement.getProject();
         this.value = psiElement.getText().replaceAll("['\"]", "");
-        this.textRange = new TextRange(1, (this.value.length() > 0 ? this.value.length() - 1 : 1));
+        this.textRange = this.value.length() > 0 ? new TextRange(1, this.value.length() - 1) : new TextRange(0,0);
         this.parseResult = WSUtil.parseComponentName(value);
     }
 

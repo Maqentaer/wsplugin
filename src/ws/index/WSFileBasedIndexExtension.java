@@ -13,6 +13,7 @@ import com.intellij.util.io.DataExternalizer;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import org.jetbrains.annotations.NotNull;
+import ws.WSUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
 
 public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, Void> {
 
-    private static final int INDEX_VERSION = 110;//(int)new Date().getTime(); // fixme: !!!!;
+    private static final int INDEX_VERSION = 111; // !!!ВАЖНО!!! при изменении логики построения индекса необходимо увеличить версию индекса
 
     public static final ID<String, Void> WS_PATH_INDEX = ID.create("wsPathIndex");
     private DataIndexer<String, Void, FileContent> myDataIndexer = new MyDataIndexer();
@@ -50,7 +51,7 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
                     }
                     JSExpression[] arg = argList.getArguments();
                     if(arg.length > 0){
-                        Pattern pattern = Pattern.compile("^['\"]js!(SBIS3\\.\\w+\\.\\w+)");
+                        Pattern pattern = Pattern.compile(WSUtil.INDEX_REGEX_PATTERN);
                         Matcher matcher = pattern.matcher(arg[0].getText());
 
                         if (matcher.find()) {
@@ -77,7 +78,7 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
         public boolean acceptInput(@NotNull VirtualFile file) {
             boolean accepts = super.acceptInput(file);
             if (accepts && file.getFileType() == StdFileTypes.JS) {
-                accepts = (file.getName().endsWith(".module.js"));
+                accepts = (file.getName().endsWith(".module.js") || file.getName().endsWith("-plugin.js"));
             }
             return accepts;
         }

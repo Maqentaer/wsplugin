@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import ws.WSUtil;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 public class WSJsReference extends WSPsiReference {
 
@@ -17,14 +18,14 @@ public class WSJsReference extends WSPsiReference {
     @NotNull
     public Object[] getVariants() {
         Collection<String> variants = WSUtil.getVariantsByName(parseResult, project);
-        Object[] result = new Object[variants.size()];
+        Collection<String> result = new HashSet<String>();
 
-        int i = 0;
         for (Object variant : variants) {
-            result[i++] = "js!" + variant;
+            result.add("js!" + variant);
+            result.addAll(WSUtil.getOtherModules((String) variant, project));
         }
 
-        return result;
+        return result.toArray();
     }
 
     @NotNull

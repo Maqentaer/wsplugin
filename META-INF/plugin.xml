@@ -1,18 +1,18 @@
 <idea-plugin version="2">
   <id>com.ws.unique.plugin.id</id>
   <name>wsplugin</name>
-  <version>0.1</version>
+  <version>0.11</version>
   <vendor url="https://github.com/salahov/wsplugin/"></vendor>
 
   <description><![CDATA[
-  # wsplugin
+  <b>wsplugin</b> <br/>
 
-  Плагин для работы с ws
+  Плагин для работы с ws <br/><br/>
 
-  Что реализованино:
+  Что реализованино:<br/>
 
-  - переход и автодополнение в xhtml файлах (в тегах component и option)
-  - переход и автодополнение в в зависимостях requirejs модулей
+  - переход и автодополнение в xhtml файлах (в тегах component и option) <br/>
+  - переход и автодополнение в в зависимостях requirejs модулей <br/>
   ]]></description>
 
   <change-notes><![CDATA[]]></change-notes>
