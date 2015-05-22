@@ -27,6 +27,13 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.xml</depends>
 
+  <actions>
+    <action id="ws.AddComponent" class="ws.actions.WSAddComponent" text="Component">
+      <add-to-group group-id="NewGroup"/>
+      <!--<keyboard-shortcut first-keystroke="control alt W" keymap="$default"/>-->
+    </action>
+  </actions>
+
   <extensions defaultExtensionNs="com.intellij">
     <psi.referenceContributor implementation="ws.WSPsiReferenceContributor" />
     <fileBasedIndex implementation="ws.index.WSFileBasedIndexExtension" />
