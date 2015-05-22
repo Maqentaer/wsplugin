@@ -1,4 +1,4 @@
-package ws;
+package ws.provider;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;

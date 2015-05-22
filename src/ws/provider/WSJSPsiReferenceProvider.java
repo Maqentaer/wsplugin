@@ -1,4 +1,4 @@
-package ws;
+package ws.provider;
 
 import com.intellij.lang.javascript.psi.JSArgumentList;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;

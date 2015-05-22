@@ -23,7 +23,6 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
         this.element = psiElement;
         this.project = psiElement.getProject();
         this.value = psiElement.getText().replaceAll("['\"]", "");
-        this.textRange = this.value.length() > 0 ? new TextRange(1, this.value.length() - 1) : new TextRange(0,0);
         this.parseResult = WSUtil.parseComponentName(value);
     }
 
@@ -48,7 +47,12 @@ public abstract class WSPsiReference implements PsiReference, PsiPolyVariantRefe
     }
 
     public TextRange getRangeInElement() {
-        return textRange;
+        String text = element.getText();
+        if(text.startsWith("\"") || text.startsWith("'")){
+            return new TextRange(1, text.length()-1);
+        } else {
+            return TextRange.allOf(value);
+        }
     }
 
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
