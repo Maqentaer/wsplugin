@@ -30,7 +30,6 @@
   <actions>
     <action id="ws.AddComponent" class="ws.actions.WSAddComponent" text="Component">
       <add-to-group group-id="NewGroup"/>
-      <!--<keyboard-shortcut first-keystroke="control alt W" keymap="$default"/>-->
     </action>
   </actions>
 
