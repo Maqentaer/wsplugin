@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.ws.unique.plugin.id</id>
   <name>wsplugin</name>
-  <version>0.12</version>
+  <version>0.13</version>
   <vendor url="https://github.com/salahov/wsplugin/"></vendor>
 
   <description><![CDATA[
@@ -13,9 +13,13 @@
 
   - переход и автодополнение в xhtml файлах (в тегах component и option) <br/>
   - переход и автодополнение в в зависимостях requirejs модулей <br/>
+  - диалог создания компонента<br/>
   ]]></description>
 
   <change-notes><![CDATA[
+  0.13<br/>
+  - добавлен диалог создания компонента<br/>
+  <br/>
   0.12<br/>
   - добавлен переход из тела тега option (без автодополнения)<br/>
   - исправлена проблема с подчеркиванием последних символов<br/>
@@ -28,8 +32,8 @@
   <depends>com.intellij.modules.xml</depends>
 
   <actions>
-    <action id="ws.AddComponent" class="ws.actions.WSAddComponent" text="Component">
-      <add-to-group group-id="NewGroup"/>
+    <action id="ws.AddComponent" class="ws.actions.WSAddComponent" text="Component" icon="WSIcons.ws">
+      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
     </action>
   </actions>
 

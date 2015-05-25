@@ -1,20 +1,11 @@
 package ws.actions;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.event.*;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class WSAddComponentDialog extends JDialog {
-    private final Project project;
+public abstract class WSAddComponentDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -23,11 +14,20 @@ public class WSAddComponentDialog extends JDialog {
     private JCheckBox checkXhtml;
     private JCheckBox checkCss;
 
-    public WSAddComponentDialog(Project project) {
-        this.project = project;
+    public WSAddComponentDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setSize(400, 100);
+        setResizable(false);
+        pack();
+        setLocationRelativeTo(null);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -41,63 +41,50 @@ public class WSAddComponentDialog extends JDialog {
             }
         });
 
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                onCancel();
-            }
-        });
-
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
+        componentName.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                checkEnabled();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                checkEnabled();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                checkEnabled();
+            }
+        });
 
-        setSize(400, 100);
-        pack();
+        checkJs.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                checkEnabled();
+            }
+        });
+        checkXhtml.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                checkEnabled();
+            }
+        });
+        checkCss.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                checkEnabled();
+            }
+        });
+
         setVisible(true);
     }
 
-    private void onOK() {
-        PsiDirectory directory = PsiManager.getInstance(project).findDirectory(project.getBaseDir());
-        if (directory != null && !getControlName().isEmpty()) {
-            Pattern pattern = Pattern.compile("^(SBIS3)\\.(\\w+)\\.(\\w+)");
-            Matcher matcher = pattern.matcher(getControlName());
+    abstract void onOK();
 
-            if (matcher.find()) {
-                String prName = matcher.group(2);
-                String controlName = matcher.group(3);
-                try {
-                    PsiDirectory controlDirectory = directory.createSubdirectory(controlName);
-                    if (checkJs.isSelected()) {
-                        PsiFile jsFile = controlDirectory.createFile(controlName + ".module.js");
-
-                        FileWriter fileWriter = new FileWriter(jsFile.getVirtualFile().getPath());
-                        fileWriter.write(String.format(WSAddComponent.jsFileString, getControlName(), controlName));
-                        fileWriter.close();
-
-                    }
-                    if (checkXhtml.isSelected()) {
-                        PsiFile xhtmlFile = controlDirectory.createFile(controlName + ".xhtml");
-
-                        FileWriter fileWriter = new FileWriter(xhtmlFile.getVirtualFile().getPath());
-                        fileWriter.write(String.format(WSAddComponent.xhtmlFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
-                        fileWriter.close();
-                    }
-                    if (checkJs.isSelected()) {
-                        PsiFile checkCss = controlDirectory.createFile(controlName + ".css");
-                        FileWriter fileWriter = new FileWriter(checkCss.getVirtualFile().getPath());
-                        fileWriter.write(String.format(WSAddComponent.cssFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
-                        fileWriter.close();
-                    }
-                } catch (IOException e) {
-                }
-            }
-        }
-
-        dispose();
+    private void checkEnabled() {
+        buttonOK.setEnabled(
+            componentName.getText().matches("^(SBIS3)\\.(\\w+)\\.(\\w+)") &&
+            (needJsFile() || needXhtmlFile() || needCssFile())
+        );
     }
 
     private void onCancel() {
@@ -107,4 +94,17 @@ public class WSAddComponentDialog extends JDialog {
     public String getControlName() {
         return componentName.getText();
     }
+
+    public boolean needJsFile() {
+        return checkJs.isSelected();
+    }
+
+    public boolean needXhtmlFile() {
+        return checkXhtml.isSelected();
+    }
+
+    public boolean needCssFile() {
+        return checkCss.isSelected();
+    }
+
 }
