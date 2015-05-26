@@ -2,7 +2,7 @@
   <id>com.ws.unique.plugin.id</id>
   <name>wsplugin</name>
   <version>0.13</version>
-  <vendor url="https://github.com/salahov/wsplugin/"></vendor>
+  <vendor url="https://github.com/salahov/wsplugin/"/>
 
   <description><![CDATA[
   <b>wsplugin</b> <br/>
@@ -34,6 +34,9 @@
   <actions>
     <action id="ws.AddComponent" class="ws.actions.WSAddComponent" text="Component" icon="WSIcons.ws">
       <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+    </action>
+    <action id="ws.GenerateComponent" class="ws.actions.WSGenerateComponent" text="Component" icon="WSIcons.ws">
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
     </action>
   </actions>
 
