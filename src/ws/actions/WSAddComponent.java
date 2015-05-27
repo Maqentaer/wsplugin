@@ -3,6 +3,7 @@ package ws.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -64,33 +65,39 @@ public class WSAddComponent extends AnAction {
                     Matcher matcher = pattern.matcher(getControlName());
 
                     if (matcher.find()) {
-                        String prName = matcher.group(2);
-                        String controlName = matcher.group(3);
-                        try {
-                            PsiDirectory controlDirectory = directory.createSubdirectory(controlName);
-                            if (needJsFile()) {
-                                PsiFile jsFile = controlDirectory.createFile(controlName + ".module.js");
+                        final String prName = matcher.group(2);
+                        final String controlName = matcher.group(3);
+                        WriteCommandAction.runWriteCommandAction(null, new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    PsiDirectory controlDirectory = directory.createSubdirectory(controlName);
+                                    if (needJsFile()) {
+                                        PsiFile jsFile = controlDirectory.createFile(controlName + ".module.js");
 
-                                FileWriter fileWriter = new FileWriter(jsFile.getVirtualFile().getPath());
-                                fileWriter.write(String.format(WSAddComponent.jsFileString, getControlName(), controlName));
-                                fileWriter.close();
+                                        FileWriter fileWriter = new FileWriter(jsFile.getVirtualFile().getPath());
+                                        fileWriter.write(String.format(WSAddComponent.jsFileString, getControlName(), controlName));
+                                        fileWriter.close();
 
-                            }
-                            if (needXhtmlFile()) {
-                                PsiFile xhtmlFile = controlDirectory.createFile(controlName + ".xhtml");
+                                    }
+                                    if (needXhtmlFile()) {
+                                        PsiFile xhtmlFile = controlDirectory.createFile(controlName + ".xhtml");
 
-                                FileWriter fileWriter = new FileWriter(xhtmlFile.getVirtualFile().getPath());
-                                fileWriter.write(String.format(WSAddComponent.xhtmlFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
-                                fileWriter.close();
+                                        FileWriter fileWriter = new FileWriter(xhtmlFile.getVirtualFile().getPath());
+                                        fileWriter.write(String.format(WSAddComponent.xhtmlFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
+                                        fileWriter.close();
+                                    }
+                                    if (needCssFile()) {
+                                        PsiFile checkCss = controlDirectory.createFile(controlName + ".css");
+                                        FileWriter fileWriter = new FileWriter(checkCss.getVirtualFile().getPath());
+                                        fileWriter.write(String.format(WSAddComponent.cssFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
+                                        fileWriter.close();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                            if (needCssFile()) {
-                                PsiFile checkCss = controlDirectory.createFile(controlName + ".css");
-                                FileWriter fileWriter = new FileWriter(checkCss.getVirtualFile().getPath());
-                                fileWriter.write(String.format(WSAddComponent.cssFileString, prName.toLowerCase() + "-" + controlName.toLowerCase()));
-                                fileWriter.close();
-                            }
-                        } catch (Exception ignore) {
-                        }
+                        });
                     }
                 }
 
