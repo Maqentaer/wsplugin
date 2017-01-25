@@ -1,12 +1,17 @@
 package ws.index;
 
 import com.intellij.lang.javascript.psi.JSArgumentList;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
+import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiElementProcessor;
+import com.intellij.psi.util.PsiElementFilter;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.DataExternalizer;
@@ -23,13 +28,13 @@ import java.util.regex.Pattern;
 
 public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, Void> {
 
-    private static final int INDEX_VERSION = 111; // !!!ВАЖНО!!! при изменении логики построения индекса необходимо увеличить версию индекса
+    private static final int INDEX_VERSION = 132; // !!!Р’РђР–РќРћ!!! РїСЂРё РёР·РјРµРЅРµРЅРёРё Р»РѕРіРёРєРё РїРѕСЃС‚СЂРѕРµРЅРёСЏ РёРЅРґРµРєСЃР° РЅРµРѕР±С…РѕРґРёРјРѕ СѓРІРµР»РёС‡РёС‚СЊ РІРµСЂСЃРёСЋ РёРЅРґРµРєСЃР°
 
     public static final ID<String, Void> WS_PATH_INDEX = ID.create("wsPathIndex");
     private DataIndexer<String, Void, FileContent> myDataIndexer = new MyDataIndexer();
 
     public static Collection<VirtualFile> getFileByComponentName(@NotNull final Project project, @NotNull final String name) {
-        return  FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project));
+        return FileBasedIndex.getInstance().getContainingFiles(WS_PATH_INDEX, name, GlobalSearchScope.projectScope(project));
     }
 
     public static Collection<String> getAllComponentNames(@NotNull final Project project) {
@@ -42,30 +47,43 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
         public Map<String, Void> map(@NotNull final FileContent inputData) {
             String key = null;
             try {
-                Collection<JSArgumentList> argListCollection = PsiTreeUtil.findChildrenOfType(inputData.getPsiFile(), JSArgumentList.class);
-                if(argListCollection.iterator().hasNext()){
-                    JSArgumentList argList = argListCollection.iterator().next();
-                    String functionName  = ((JSCallExpressionImpl)argList.getParent()).getMethodExpression().getText();
-                    if(!functionName.equals("define")){
-                        return Collections.emptyMap();
+                PsiElementFilter filter = new PsiElementFilter() {
+                    @Override
+                    public boolean isAccepted(PsiElement psiElement) {
+
+                        if (PsiTreeUtil.instanceOf(psiElement, JSArgumentList.class)) {
+                            try {
+                                String functionName = ((JSCallExpressionImpl) psiElement.getParent()).getMethodExpression().getText();
+                                return functionName.equals("define");
+                            } catch (Exception ignore) {
+                                return false; // Р·РЅР°С‡РёС‚ С‡С‚Рѕ С‚Рѕ РЅРµ РєР°СЃС‚СѓРµС‚СЃСЏ, РЅСѓ Рё РїСѓСЃС‚СЊ
+                            }
+                        }
+                        return false;
                     }
-                    JSExpression[] arg = argList.getArguments();
-                    if(arg.length > 0){
+                };
+
+                PsiElement[] argListCollection = PsiTreeUtil.collectElements(inputData.getPsiFile(), filter);
+
+                if (argListCollection.length > 0) {
+                    JSExpression[] arg = ((JSArgumentList) argListCollection[0]).getArguments();
+                    if (arg.length > 0) {
                         Pattern pattern = Pattern.compile(WSUtil.INDEX_REGEX_PATTERN);
                         Matcher matcher = pattern.matcher(arg[0].getText());
 
                         if (matcher.find()) {
                             String controlName = matcher.group(1);
-                            if(controlName != null){
+                            if (controlName != null) {
                                 key = controlName;
                             }
                         }
                     }
                 }
-            } catch (Exception ignore){}
+            } catch (Exception ignore) {
+            }
 
 
-            if(key == null || key.isEmpty()){
+            if (key == null || key.isEmpty()) {
                 return Collections.emptyMap();
             }
 
@@ -77,9 +95,10 @@ public class WSFileBasedIndexExtension extends FileBasedIndexExtension<String, V
         @Override
         public boolean acceptInput(@NotNull VirtualFile file) {
             boolean accepts = super.acceptInput(file);
-            if (accepts && file.getFileType() == StdFileTypes.JS) {
+            accepts = accepts && file.getFileType() == StdFileTypes.JS;
+            /*if (accepts && file.getFileType() == StdFileTypes.JS) {
                 accepts = (file.getName().endsWith(".module.js") || file.getName().endsWith("-plugin.js"));
-            }
+            }*/
             return accepts;
         }
 

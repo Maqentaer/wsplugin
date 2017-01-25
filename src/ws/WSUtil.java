@@ -15,11 +15,11 @@ import java.util.regex.Pattern;
 
 public class WSUtil {
 
-    public static String REGEX_PATTERN = "(\\w+!)?(SBIS3\\.\\w+\\.[\\w.]+)(.*)?";
-    public static String INDEX_REGEX_PATTERN = "^['\"]js!(SBIS3\\.\\w+\\.[\\w.]+)";
-    public static String CONTROL_REGEX_PATTERN = "^(SBIS3\\.\\w+\\.\\w+)$";
+    public static String REGEX_PATTERN = "(\\w+!)?([\\w.]+)(.*)?";
+    public static String INDEX_REGEX_PATTERN = "^['\"]js!([\\w.]+)";
+    public static String CONTROL_REGEX_PATTERN = "^([\\w.]+)$";
 
-    public static boolean matchPattern(String str){
+    public static boolean matchPattern(String str) {
         return str.matches(CONTROL_REGEX_PATTERN);
     }
 
@@ -31,14 +31,14 @@ public class WSUtil {
         Matcher matcher = pattern.matcher(text);
 
         if (matcher.find()) {
-            result[0] = matcher.group(2).trim(); // ËÏˇ ÍÓÌÚÓÎ‡
-            result[1] = matcher.group(3) != null ? matcher.group(3).trim() : ""; // ÔÛÚ¸ ‰Ó Ù‡ÈÎ‡ + ËÏˇ ÙÛÌÍˆËË
-            result[3] = matcher.group(1) != null ? matcher.group(1).replace("!", "") : ""; // ÔÂÙËÍÒ (js, html, css)
+            result[0] = matcher.group(2).trim(); // –∏–º—è –∫–æ–Ω—Ç—Ä–æ–ª–∞
+            result[1] = matcher.group(3) != null ? matcher.group(3).trim() : ""; // –ø—É—Ç—å –¥–æ —Ñ–∞–π–ª–∞ + –∏–º—è —Ñ—É–Ω–∫—Ü–∏–∏
+            result[3] = matcher.group(1) != null ? matcher.group(1).replace("!", "") : ""; // –ø—Ä–µ—Ñ–∏–∫—Å (js, html, css)
 
             String[] str = result[1].split(":");
-            result[1] = str[0]; // ÔÛÚ¸ ‰Ó Ù‡ÈÎ‡
+            result[1] = str[0]; // –ø—É—Ç—å –¥–æ —Ñ–∞–π–ª–∞
             if (str.length > 1) {
-                result[2] = str[1]; // ËÏˇ Ù‡ÈÎ‡
+                result[2] = str[1]; // –∏–º—è —Ñ–∞–π–ª–∞
             }
         }
 
@@ -81,7 +81,7 @@ public class WSUtil {
                     result.addAll(WSUtil.getChildFiles(file, componentName));
                 }
             }
-            if(result.size() == 0){
+            if (result.size() == 0) {
                 result = WSFileBasedIndexExtension.getAllComponentNames(project);
             }
         } else {
@@ -91,12 +91,12 @@ public class WSUtil {
         return result;
     }
 
-    public static Collection<String> getOtherModules(@NonNls String controlName, @NonNls Project project){
+    public static Collection<String> getOtherModules(@NonNls String controlName, @NonNls Project project) {
         Collection<String> result = new HashSet<String>();
         Collection<VirtualFile> files = WSFileBasedIndexExtension.getFileByComponentName(project, controlName);
 
-        for(VirtualFile file : files){
-            String fileName = file.getName().replace("module.js","");
+        for (VirtualFile file : files) {
+            String fileName = file.getName().replace("module.js", "");
             VirtualFile folder = file.getParent();
 
             if (folder.findFileByRelativePath(fileName + "css") != null) {
@@ -116,7 +116,7 @@ public class WSUtil {
         String path = parseResult[1];
         String pref = parseResult[3];
 
-        if(pref.isEmpty() && !controlName.isEmpty()){
+        if (pref.isEmpty() && !controlName.isEmpty()) {
             pref = "js";
         }
 
@@ -124,7 +124,7 @@ public class WSUtil {
             return resultFilesCollection;
         }
 
-        if(pref.equals("html")){
+        if (pref.equals("html")) {
             pref = "xhtml";
         }
 
@@ -145,11 +145,16 @@ public class WSUtil {
                     continue;
                 }
             } else if (!pref.equals("js")) {
-                VirtualFile pathFile = file.getParent().findFileByRelativePath(file.getName().replace("module.js","") + pref);
+                VirtualFile pathFile = file.getParent().findFileByRelativePath(file.getName().replace("module.js", "") + pref);
                 if (pathFile != null) {
                     file = pathFile;
                 } else {
-                    continue;
+                    VirtualFile pathFile2 = file.getParent().findFileByRelativePath(file.getName().replace("js", "") + pref);
+                    if (pathFile2 != null) {
+                        file = pathFile2;
+                    } else {
+                        continue;
+                    }
                 }
             }
             try {

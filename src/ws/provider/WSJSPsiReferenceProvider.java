@@ -36,7 +36,7 @@ public class WSJSPsiReferenceProvider extends PsiReferenceProvider {
             return false;
         }
         return (
-           parent instanceof JSArrayLiteralExpression && topParent instanceof JSCallExpression && (topParent.getText().startsWith("define")) ||
+           !psiElement.getText().matches(".(i18n!).*") && parent instanceof JSArrayLiteralExpression && topParent instanceof JSCallExpression && (topParent.getText().startsWith("define")) ||
            parent instanceof JSArgumentList && (topParent.getText().startsWith("require") || topParent.getText().startsWith("$ws.require") ||
            topParent.getText().startsWith("$ws.requireModule")) || psiElement.getText().matches("^['\"]js!.*")
         );

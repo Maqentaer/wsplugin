@@ -27,7 +27,7 @@ public class WSOptionReference extends WSPsiReference {
     public Object[] getVariants() {
         Collection<PsiElement> resolveFiles = WSUtil.resolveFilesByName(parseResult, project);
 
-        // todo: сделать в цикле
+        // todo: СЃРґРµР»Р°С‚СЊ РІ С†РёРєР»Рµ
         if (resolveFiles.iterator().hasNext()) {
             JSFile file = (JSFile) resolveFiles.iterator().next();
             WSAMDFile amdFile = WSAMDUtils.getAMDFile(file);
