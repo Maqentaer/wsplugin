@@ -27,7 +27,7 @@ public class WSPsiReferenceContributor extends PsiReferenceContributor {
 
         psiReferenceRegistrar.registerReferenceProvider(
                 StandardPatterns
-                        .instanceOf(XmlTokenImpl.class) // !!! почему-то не получается сразу искать в XmlText, поэтому ищем XmlToken
+                        .instanceOf(XmlTokenImpl.class) // !!! РїРѕС‡РµРјСѓ-С‚Рѕ РЅРµ РїРѕР»СѓС‡Р°РµС‚СЃСЏ СЃСЂР°Р·Сѓ РёСЃРєР°С‚СЊ РІ XmlText, РїРѕСЌС‚РѕРјСѓ РёС‰РµРј XmlToken
                         .and(new FilterPattern(new ElementFilter() {
                             @Override
                             public boolean isAcceptable(Object element, PsiElement context) {
